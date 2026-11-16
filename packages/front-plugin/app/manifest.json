@@ -1,0 +1,59 @@
+{
+  "name": "Overturn",
+  "sdk": "https://dev.frontapp.com/docs/plugin-sdk",
+  "entrypoint": "index.html",
+  "location": "side_panel",
+  "parameters": [
+    {
+      "name": "overturn_api_key",
+      "required": true,
+      "helpText": "A project API key from Overturn (Settings → API keys). Paste it in the panel. Front does not keep plugin secrets server-side."
+    },
+    {
+      "name": "overturn_base_url",
+      "required": false,
+      "default": "https://api.overturn.run",
+      "helpText": "Your Overturn API URL when self-hosting. https, or http://localhost."
+    },
+    {
+      "name": "agent",
+      "required": false,
+      "default": "support-reply",
+      "helpText": "The workflow name. One regression suite per workflow."
+    },
+    {
+      "name": "reason_pack",
+      "required": false,
+      "default": "support",
+      "helpText": "Which one-click reasons teammates see: \"support\" or \"claims\"."
+    },
+    {
+      "name": "require_reason",
+      "required": false,
+      "default": true,
+      "helpText": "Hold a changed reply until the teammate picks a reason. On by default."
+    },
+    {
+      "name": "capture_internal_notes",
+      "required": false,
+      "default": false,
+      "helpText": "Also capture an internal comment, not only a sent reply."
+    },
+    {
+      "name": "decision_fields",
+      "required": false,
+      "helpText": "Custom fields that are the decision, as id:label pairs, e.g. fld_123:coverage, fld_456:reserve."
+    },
+    {
+      "name": "scope_tag",
+      "required": false,
+      "helpText": "Optional. Only conversations carrying this tag are watched."
+    },
+    {
+      "name": "min_draft_chars",
+      "required": false,
+      "default": "80",
+      "helpText": "Text inserted into the composer in one go, at least this long, counts as the draft."
+    }
+  ]
+}
