@@ -5,15 +5,10 @@
   "location": "side_panel",
   "parameters": [
     {
-      "name": "overturn_api_key",
-      "required": true,
-      "helpText": "A project API key from Overturn (Settings → API keys). Paste it in the panel. Front does not keep plugin secrets server-side."
-    },
-    {
       "name": "overturn_base_url",
       "required": false,
       "default": "https://api.overturn.run",
-      "helpText": "Your Overturn API URL when self-hosting. https, or http://localhost."
+      "helpText": "Your Overturn API URL when self-hosting. Set it in settings.json next to index.html, not in the plugin URL. https, or http://localhost."
     },
     {
       "name": "agent",

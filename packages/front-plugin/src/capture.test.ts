@@ -7,12 +7,15 @@ import {
   DEFAULT_SETTINGS,
   decideOnSend,
   decisionFieldsFrom,
+  decodeStoredApiKey,
+  encodeStoredApiKey,
   type FrontMessage,
   findSentMessage,
   inScope,
   onSend,
   quickReasons,
   settingsFrom,
+  settingsFromQuery,
   statusLine,
   stripHtml,
   threadForCapture,
@@ -137,6 +140,17 @@ describe("settings", () => {
     expect(settingsFrom({ overturn_base_url: "javascript:alert(1)" }).baseUrl).toBe(
       "https://api.overturn.run",
     );
+    expect(settingsFrom({ overturn_base_url: "https://ov.internal" }).baseUrl).toBe("https://ov.internal");
+  });
+
+  it("the plugin URL cannot retarget the API, and a saved key is not sent to another origin", () => {
+    expect(settingsFromQuery("?overturn_base_url=https://evil.example&agent=claims-reply")).toEqual({
+      agent: "claims-reply",
+    });
+    const stored = encodeStoredApiKey("test-key", "https://api.overturn.run");
+    expect(decodeStoredApiKey(stored, "https://api.overturn.run")).toBe("test-key");
+    expect(decodeStoredApiKey(stored, "https://evil.example")).toBeNull();
+    expect(decodeStoredApiKey("not-json", "https://api.overturn.run")).toBeNull();
   });
 });
 

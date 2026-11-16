@@ -16,27 +16,20 @@ import {
   type DraftDetector,
   decideOnSend,
   decisionFieldsFrom,
+  decodeStoredApiKey,
+  encodeStoredApiKey,
   type FrontMessage,
   findSentMessage,
   inScope,
   onSend,
   quickReasons,
   settingsFrom,
+  settingsFromQuery,
   statusLine,
   threadForCapture,
 } from "./capture";
 
 const KEY_STORAGE = "overturn.front.apiKey";
-const QUERY_KEYS = [
-  "overturn_base_url",
-  "agent",
-  "reason_pack",
-  "require_reason",
-  "capture_internal_notes",
-  "decision_fields",
-  "scope_tag",
-  "min_draft_chars",
-] as const;
 
 class CaptureHttpError extends Error {
   readonly status: number | string;
@@ -146,14 +139,12 @@ function isCaptureResult(value: unknown): value is CaptureResult {
   return kindOk && typeof record.changed === "boolean" && typeof record.deduplicated === "boolean";
 }
 
-function querySettings(): Record<string, unknown> {
-  const params = new URLSearchParams(location.search);
-  const raw: Record<string, unknown> = {};
-  for (const key of QUERY_KEYS) {
-    const value = params.get(key);
-    if (value) raw[key] = value;
+function apiOrigin(): string {
+  try {
+    return new URL(settings.baseUrl).origin;
+  } catch {
+    return "https://api.overturn.run";
   }
-  return raw;
 }
 
 let fileKey: string | null = null;
@@ -176,8 +167,7 @@ async function fileSettings(): Promise<Record<string, unknown>> {
 
 function storedKey(): string | null {
   try {
-    const value = localStorage.getItem(KEY_STORAGE);
-    return value?.trim() ? value.trim() : null;
+    return decodeStoredApiKey(localStorage.getItem(KEY_STORAGE), apiOrigin());
   } catch {
     return null;
   }
@@ -305,7 +295,7 @@ function shell(): ConversationSnapshot {
 
 async function main(): Promise<void> {
   const file = await fileSettings();
-  settings = settingsFrom({ ...file, ...querySettings() });
+  settings = settingsFrom({ ...file, ...settingsFromQuery(location.search) });
   detector = createDraftDetector({ minDraftChars: settings.minDraftChars });
 
   const root = document.getElementById("app");
@@ -423,7 +413,7 @@ async function main(): Promise<void> {
     const value = keyInput.value.trim();
     if (!value) return;
     try {
-      localStorage.setItem(KEY_STORAGE, value);
+      localStorage.setItem(KEY_STORAGE, encodeStoredApiKey(value, apiOrigin()));
     } catch (error) {
       console.error("Overturn could not store the API key in this browser.", error);
     }

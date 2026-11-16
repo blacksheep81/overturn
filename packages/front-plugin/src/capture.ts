@@ -64,8 +64,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
 };
 
 /**
- * https only, plus loopback http for a local API. Anything else (a query string pointing the
- * key at another host) falls back to the hosted API.
+ * https, plus loopback http for a local API. The plugin URL's query string cannot set this;
+ * only settings.json on the host can, so a rewritten query cannot point the key at another site.
  */
 export function safeBaseUrl(raw: string | null): string {
   if (!raw) return DEFAULT_SETTINGS.baseUrl;
@@ -112,6 +112,47 @@ export function settingsFrom(raw: Record<string, unknown>): AppSettings {
     scopeTag: str("scope_tag"),
     reasonPack: reasonPackFrom(str("reason_pack")),
   };
+}
+
+/** Query keys an admin may set on the plugin URL. The API base URL is not one of them. */
+export const SETTINGS_QUERY_KEYS = [
+  "agent",
+  "reason_pack",
+  "require_reason",
+  "capture_internal_notes",
+  "decision_fields",
+  "scope_tag",
+  "min_draft_chars",
+] as const;
+
+export function settingsFromQuery(search: string): Record<string, unknown> {
+  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  const raw: Record<string, unknown> = {};
+  for (const key of SETTINGS_QUERY_KEYS) {
+    const value = params.get(key);
+    if (value) raw[key] = value;
+  }
+  return raw;
+}
+
+/** The pasted key is stored with the API origin it was entered for, and is not sent anywhere else. */
+export function encodeStoredApiKey(key: string, origin: string): string {
+  return JSON.stringify({ key, origin });
+}
+
+export function decodeStoredApiKey(raw: string | null, origin: string): string | null {
+  if (!raw) return null;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null || !("key" in parsed) || !("origin" in parsed))
+      return null;
+    if (typeof parsed.key !== "string" || typeof parsed.origin !== "string") return null;
+    if (parsed.origin !== origin) return null;
+    const key = parsed.key.trim();
+    return key ? key : null;
+  } catch {
+    return null;
+  }
 }
 
 /** With a scope tag, conversations without it are never read, not even the composer. */

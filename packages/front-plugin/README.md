@@ -17,8 +17,8 @@ The thread is listed only after a draft is in the composer. A conversation with 
 1. In Overturn, create a project API key (Settings → API keys).
 2. Build: `pnpm --filter @overturn-ai/front-plugin build` → `dist/overturn-front-plugin.zip`. Host the `dist/app` folder at an https URL.
 3. In Front: Settings → Plugins → Add a plugin. Side panel. Endpoint: that URL. Icon: `app/assets/logo.png`.
-4. Settings are query parameters on the endpoint URL: `agent`, `reason_pack` (`support` or `claims`), `require_reason`, `capture_internal_notes`, `decision_fields` (`fld_123:coverage, fld_456:reserve`), `scope_tag`, `min_draft_chars`, `overturn_base_url` (https, or `http://localhost` for a local API).
-5. Each teammate pastes the API key in the panel once. Front does not keep a server-side secret the way Zendesk does, so the key stays in the browser (or in a `settings.json` next to `index.html` on a host you control). Do not put the key in the plugin URL.
+4. Settings that are not secret are query parameters on the endpoint URL: `agent`, `reason_pack` (`support` or `claims`), `require_reason`, `capture_internal_notes`, `decision_fields` (`fld_123:coverage, fld_456:reserve`), `scope_tag`, `min_draft_chars`. `overturn_base_url` (https, or `http://localhost` for a local API) goes in a `settings.json` next to `index.html`, not in the query string.
+5. Each teammate pastes the API key in the panel once. It is stored in the browser against that API origin and is not sent to a different one. Front does not keep a server-side secret the way Zendesk does. A `settings.json` on the host can hold the key too; that file is then as public as the host. Do not put the key in the plugin URL.
 
 ## Replay what it captured
 
