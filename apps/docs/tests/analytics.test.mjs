@@ -81,6 +81,12 @@ describe("analytics.js", () => {
     assert.equal(opts.api_host, "https://us.i.posthog.com");
     assert.equal(opts.capture_pageview, true);
     assert.equal(opts.autocapture, false);
+    // the project's remote config must not be able to switch these on for the marketing site
+    assert.equal(opts.enable_heatmaps, false);
+    assert.equal(opts.capture_dead_clicks, false);
+    assert.equal(opts.capture_performance, false);
+    assert.equal(opts.capture_exceptions, false);
+    assert.equal(opts.disable_surveys, true);
     assert.equal(opts.disable_session_recording, true);
     assert.equal(opts.cross_subdomain_cookie, true);
   });

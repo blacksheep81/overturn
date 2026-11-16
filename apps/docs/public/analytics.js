@@ -20,8 +20,15 @@
       api_host: "https://us.i.posthog.com",
       capture_pageview: true,
       capture_pageleave: true,
-      // the funnel uses explicit events; autocapture would send clicked elements' text
+      // the funnel uses explicit events only. These are off here rather than left to the project's remote
+      // config, which can switch them on: autocapture (clicked elements' text), heatmaps and dead clicks
+      // (click positions and selectors), web vitals and network timing, exceptions, surveys.
       autocapture: false,
+      enable_heatmaps: false,
+      capture_dead_clicks: false,
+      capture_performance: false,
+      capture_exceptions: false,
+      disable_surveys: true,
       // recordings are allowed for app.overturn.run only (project setting), so do not load the recorder
       disable_session_recording: true,
       persistence: "localStorage+cookie",
