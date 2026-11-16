@@ -38,9 +38,12 @@ function PageView() {
   return null;
 }
 
-/** No-op when NEXT_PUBLIC_POSTHOG_KEY is unset. */
+/**
+ * Sends nothing when no key resolves (PageView returns early and posthog is never initialised). The
+ * tree must not depend on KEY: the server never has a hostname, so it never resolves the production
+ * key, and a different tree on the client breaks hydration (React #418, OVERTURN-WEB-1).
+ */
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  if (!KEY) return <>{children}</>;
   return (
     <PHProvider client={posthog}>
       <Suspense fallback={null}>
