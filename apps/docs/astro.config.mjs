@@ -11,6 +11,8 @@ export default defineConfig({
       description: "Every human correction of an AI agent becomes a replayable regression test.",
       logo: { light: "./public/logo.svg", dark: "./public/logo-dark.svg", replacesTitle: true },
       favicon: "/favicon.svg",
+      // PostHog, production hosts only (public/analytics.js; docs/privacy)
+      head: [{ tag: "script", attrs: { src: "/docs/analytics.js", defer: true } }],
       social: [{ icon: "github", label: "GitHub", href: "https://github.com/overturn-ai/overturn" }],
       customCss: ["./src/styles/theme.css"],
       sidebar: [
