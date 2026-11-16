@@ -1,5 +1,6 @@
 // The marketing site's PostHog loader (public/analytics.js) and the CTAs it tracks.
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, it } from "node:test";
@@ -14,10 +15,11 @@ const APP_KEY = readFileSync(path.join(here, "../../web/components/analytics/pos
   /POSTHOG_PROD_KEY = "([^"]+)"/,
 )[1];
 
-/** Runs analytics.js against a fake page on `hostname`; returns what it did. */
-function load(hostname) {
+/** Runs analytics.js `times` times against one fake page on `hostname`; returns what it did. */
+function load(hostname, times = 1) {
   const appended = [];
   const listeners = {};
+  let clickListeners = 0;
   const calls = { init: [], capture: [] };
   const window = { location: { hostname } };
   const document = {
@@ -25,10 +27,12 @@ function load(hostname) {
     head: { appendChild: (el) => appended.push(el) },
     addEventListener: (type, fn) => {
       listeners[type] = fn;
+      if (type === "click") clickListeners++;
     },
   };
   window.document = document;
-  vm.runInNewContext(source, { window, document });
+  const context = vm.createContext({ window, document });
+  for (let i = 0; i < times; i++) vm.runInContext(source, context);
   const loadLibrary = () => {
     window.posthog = {
       __loaded: false,
@@ -42,7 +46,7 @@ function load(hostname) {
   };
   const click = (cta) =>
     listeners.click({ target: { closest: () => (cta ? { getAttribute: () => cta } : null) } });
-  return { appended, listeners, calls, loadLibrary, click };
+  return { appended, listeners, calls, loadLibrary, click, clickListeners: () => clickListeners };
 }
 
 describe("analytics.js", () => {
@@ -54,8 +58,20 @@ describe("analytics.js", () => {
     }
   });
 
-  it("loads PostHog on overturn.run into the app's project, without autocapture or recordings", () => {
-    const page = load("overturn.run");
+  it("reports from the Framer landing hosts and the docs host", () => {
+    for (const host of ["overturn.run", "www.overturn.run", "docs.overturn.run"]) {
+      assert.equal(load(host).appended.length, 1, host);
+    }
+  });
+
+  it("loads once per page when Framer mounts the landing page again", () => {
+    const page = load("www.overturn.run", 2);
+    assert.equal(page.appended.length, 1);
+    assert.equal(page.clickListeners(), 1);
+  });
+
+  it("loads PostHog into the app's project, without autocapture or recordings", () => {
+    const page = load("www.overturn.run");
     assert.equal(page.appended.length, 1);
     assert.equal(page.appended[0].src, "https://us-assets.i.posthog.com/static/array.js");
     page.loadLibrary();
@@ -98,9 +114,22 @@ describe("landing page", () => {
     assert.equal(new Set(names).size, names.length);
   });
 
-  it("loads analytics.js from <head>, outside the scripts copied into the Framer module", () => {
-    const head = landing.slice(0, landing.indexOf("<body>"));
-    assert.match(head, /<script src="\/docs\/analytics\.js" defer><\/script>/);
+  it("carries the analytics loader and the CTA tags into the Framer module www.overturn.run mounts", () => {
+    execFileSync(process.execPath, [path.join(here, "../scripts/assemble.mjs")], { stdio: "ignore" });
+    const framer = path.join(here, "../dist/framer");
+    const { file } = JSON.parse(readFileSync(path.join(framer, "manifest.json"), "utf8"));
+    const mod = readFileSync(path.join(framer, file), "utf8");
+    // the loader is code inside run(), not markup: an absolute URL, since the module runs on Framer's host
+    assert.match(mod, /a\.src='https:\/\/docs\.overturn\.run\/docs\/analytics\.js'/);
+    for (const cta of [
+      "hero_zendesk_app",
+      "hero_start_free",
+      "hero_docs",
+      "quickstart_api_key",
+      "quickstart_full",
+    ]) {
+      assert.ok(mod.includes(`data-cta=\\"${cta}\\"`), cta);
+    }
   });
 
   it("loads analytics.js on every docs page", () => {

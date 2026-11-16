@@ -1,12 +1,16 @@
-// PostHog for overturn.run: the landing page (site/index.html) and the docs both load this from
-// /docs/analytics.js. Same project as app.overturn.run (apps/web/components/analytics/posthog-key.ts);
+// PostHog for the marketing site and docs. Loaded by the landing page (site/index.html, which
+// www.overturn.run mounts from Framer as framer/landing.js) and by every docs page on
+// docs.overturn.run. Same project as app.overturn.run (apps/web/components/analytics/posthog-key.ts);
 // the project token is public and write-only. Only the production hosts report, so local builds and
 // previews send nothing. The cookie is first-party on .overturn.run, so a visitor who clicks
 // "Start free" is the same person in the app's funnel (CLAUDE.md "Funnel"; docs/privacy).
 (() => {
   var KEY = "phc_vWUxkGb2jZG3mjQfnSXN7XEqpVS5kaGtHJurf5sSc8ED";
-  var HOSTS = ["overturn.run", "www.overturn.run"];
+  var HOSTS = ["overturn.run", "www.overturn.run", "docs.overturn.run"];
   if (HOSTS.indexOf(window.location.hostname) === -1) return;
+  // Framer can mount the landing page more than once; one loader and one click listener per page
+  if (window.__ovAnalytics) return;
+  window.__ovAnalytics = true;
 
   var s = document.createElement("script");
   s.src = "https://us-assets.i.posthog.com/static/array.js";

@@ -7,7 +7,6 @@
 <meta name="description" content="Your support agents already review every AI draft. Overturn records what the AI wrote, what the agent sent and why, scores the AI by team and week, and replays every fix as a test before the next model or prompt change. Zendesk app, any drafting vendor. Open source.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/media/apple-touch-icon.png">
-<script src="/docs/analytics.js" defer></script>
 <meta property="og:title" content="Overturn — QA for AI-drafted replies">
 <meta property="og:description" content="Your support agents already review every AI draft. Overturn records what the AI wrote, what the agent sent and why, scores the AI by team and week, and replays every fix as a test before the next model or prompt change. Zendesk app, any drafting vendor. Open source.">
 <meta name="twitter:card" content="summary_large_image">
@@ -615,6 +614,11 @@
   <div class="r"><a href="/docs/">Docs</a><a href="https://github.com/overturn-ai/overturn">GitHub</a><a href="/docs/terms/">Terms</a><a href="/docs/privacy/">Privacy</a><a href="https://app.overturn.run/login">Sign in</a></div>
 </div></footer>
 
+<script>
+// PostHog (public/analytics.js, docs/privacy). A bare <script> so scripts/assemble.mjs carries it into
+// the Framer module that www.overturn.run mounts; analytics.js is host-gated and runs once per page.
+if(!document.querySelector('script[src$="/docs/analytics.js"]')){const a=document.createElement('script');a.src='https://docs.overturn.run/docs/analytics.js';a.async=true;document.head.appendChild(a);}
+</script>
 <script>
 document.querySelectorAll('[data-copy]').forEach(btn=>btn.addEventListener('click',()=>{navigator.clipboard&&navigator.clipboard.writeText(document.getElementById(btn.dataset.copy).textContent).then(()=>{btn.style.color='#1f9d5f';setTimeout(()=>btn.style.color='',1200)}).catch(()=>{});}));
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
