@@ -7,6 +7,7 @@
 <meta name="description" content="Your support agents already review every AI draft. Overturn records what the AI wrote, what the agent sent and why, scores the AI by team and week, and replays every fix as a test before the next model or prompt change. Zendesk app, any drafting vendor. Open source.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/media/apple-touch-icon.png">
+<script src="/docs/analytics.js" defer></script>
 <meta property="og:title" content="Overturn — QA for AI-drafted replies">
 <meta property="og:description" content="Your support agents already review every AI draft. Overturn records what the AI wrote, what the agent sent and why, scores the AI by team and week, and replays every fix as a test before the next model or prompt change. Zendesk app, any drafting vendor. Open source.">
 <meta name="twitter:card" content="summary_large_image">
@@ -351,7 +352,7 @@
     <p class="lede">Your agents already review every AI draft before it goes out. <b>Overturn</b>, installed from the Zendesk marketplace, records what the AI wrote, what the agent sent and why it changed. You get the number nobody has today: how often the draft was right, by team and by week, with the reasons it was not. Every fix becomes a test that runs before the next model or prompt change, so the AI does not make the same mistake twice. Works with any drafting tool: Zendesk's, Salesforce's, or your own.</p>
     <p class="sor">Overturn is QA for AI-drafted replies: any help desk, any vendor, checked before the change&nbsp;ships.</p>
     <div class="install"><div class="cmd"><span class="logos"><span style="background:#111">TS</span><span style="background:#3572a5">Py</span><span style="background:#f5a623">OT</span></span><code id="cmd">npm i @overturn-ai/sdk</code></div><button type="button" aria-label="Copy" data-copy="cmd"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-    <div class="ctas"><a class="btn primary" href="/docs/capture/">Install the Zendesk app</a><a class="btn" href="https://app.overturn.run/login">Start free</a><a class="btn" href="/docs/quickstart/">Read the docs</a></div>
+    <div class="ctas"><a class="btn primary" href="/docs/capture/" data-cta="hero_zendesk_app">Install the Zendesk app</a><a class="btn" href="https://app.overturn.run/login" data-cta="hero_start_free">Start free</a><a class="btn" href="/docs/quickstart/" data-cta="hero_docs">Read the docs</a></div>
     <div class="stats"><div class="cap">What one week of reviewed drafts tells you.</div><div class="row">
       <div><div class="n">25</div><div class="l">drafts changed by agents, each with the reason</div></div>
       <div><div class="n">2</div><div class="l">regressions caught before the model change</div></div>
@@ -398,7 +399,7 @@
         <div class="step" data-i="1"><div class="n">2</div><div><h3>Or record the agent itself</h3><p>Wrap the OpenAI, Anthropic or Vercel AI SDK client you already have, or point an OpenTelemetry exporter at <code>/v1/traces</code>; then approve, edit or reject in Slack, with <code>&lt;CorrectButton&gt;</code>, or from code. Either way the case freezes the original, the fix and the reason.</p></div><span class="bar"></span></div>
         <div class="step" data-i="2"><div class="n">3</div><div><h3>Replay, then train</h3><p>Replay the whole log against any model or prompt before you ship; the report leads with the old fixes that broke. Export the same log as training data, fine-tune an open model, and promote it only when it passes the suite.</p></div><span class="bar"></span></div>
       </div>
-      <div class="foot"><a class="btn primary" href="https://app.overturn.run/login">Get API key</a><a class="link" href="/docs/quickstart/">Full quickstart →</a><button class="pp" id="qs-pp" type="button" aria-label="Pause"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button></div>
+      <div class="foot"><a class="btn primary" href="https://app.overturn.run/login" data-cta="quickstart_api_key">Get API key</a><a class="link" href="/docs/quickstart/" data-cta="quickstart_full">Full quickstart →</a><button class="pp" id="qs-pp" type="button" aria-label="Pause"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg></button></div>
     </div>
     <div class="panel">
       <div class="ph" id="ph">zendesk · ticket #48213</div>

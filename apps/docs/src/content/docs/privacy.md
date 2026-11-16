@@ -3,7 +3,7 @@ title: Privacy
 description: What the hosted Overturn stores, where, for how long, who processes it, and how to delete it.
 ---
 
-*Last updated 11 November 2026.*
+*Last updated 16 November 2026.*
 
 This covers the hosted service at app.overturn.run and api.overturn.run, operated by Fluorine Technologies, Inc. None of it applies when you [self-host](/docs/self-hosting/): then the data stays on your Postgres.
 
@@ -15,9 +15,9 @@ We store what you send. Use the SDK's `redact` hook to drop or edit anything tha
 
 **Model calls.** Replays, the semantic scorer and training call the model providers you choose (OpenAI, Anthropic, Google, OpenRouter, Together) with the prompts in your cases; those providers' terms apply to those calls. Turn off **Settings → Privacy → hosted model calls** and the hosted service makes no model calls for that project; replays then run only against models you host.
 
-**Who processes it.** Railway (hosting and database, US). Resend (sign-in and invitation email). PostHog (product analytics, US): page views, the funnel events listed in our repo, and session recordings with all text and inputs masked, so no ticket, prompt or model content reaches PostHog. Sentry (error reports, US): stack traces and request metadata, not your content; Sentry's session replay is off. The model providers above, only for calls you start.
+**Who processes it.** Railway (hosting and database, US). Resend (sign-in and invitation email). PostHog (product analytics, US): page views, the funnel events listed in our repo, and session recordings in the app with all text and inputs masked, so no ticket, prompt or model content reaches PostHog. On overturn.run and these docs, PostHog gets page views and which sign-up and docs buttons were clicked; nothing there is recorded. Sentry (error reports, US): stack traces and request metadata, not your content; Sentry's session replay is off. The model providers above, only for calls you start.
 
-**Cookies.** A session cookie on app.overturn.run, and PostHog's first-party cookie and local storage for product analytics. The marketing site and docs set none.
+**Cookies.** A session cookie on app.overturn.run. PostHog's first-party cookie and local storage for product analytics, on app.overturn.run, overturn.run and these docs; the cookie is shared across overturn.run so a visit to the site and a later sign-up count as one visitor. Nothing else sets cookies.
 
 **How long.** Runs not behind a case are deleted after the project's retention setting (default 90 days). Runs behind a case, and cases, corrections, captures and replay results, are kept until you delete them or the workspace. Sign-in links expire in 15 minutes, sessions in 30 days.
 
